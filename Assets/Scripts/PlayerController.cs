@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D m_rigidbody;
-    private Vector2 m_moveDirection;
+    private float m_moveDirection;
 
     [SerializeField]
     private float m_jumpTime;
@@ -40,9 +40,12 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyUp(KeyCode.Space))
+            m_isJumping = false;
+
         m_groundCheckPos = new Vector2(transform.position.x, transform.position.y - m_groundCheckPosY);
 
-        m_moveDirection = new Vector2(Input.GetAxisRaw("Horizontal"), 0f);
+        m_moveDirection = Input.GetAxisRaw("Horizontal");
 
         if (m_isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
@@ -50,8 +53,6 @@ public class PlayerController : MonoBehaviour
             m_jumpCounter = m_jumpTime;
         }
 
-        if (Input.GetKeyUp(KeyCode.Space))
-            m_isJumping = false;
     }
 
     private void FixedUpdate()
@@ -62,15 +63,16 @@ public class PlayerController : MonoBehaviour
         {
             if (m_jumpCounter > 0)
             {
-                m_rigidbody.AddForce(Vector2.up * m_jumpForce * 10f, ForceMode2D.Impulse);
+                m_rigidbody.velocity = Vector2.up * m_jumpForce;
+                //m_rigidbody.AddForce(Vector2.up * m_jumpForce * 10f, ForceMode2D.Impulse);
                 m_jumpCounter -= Time.fixedDeltaTime;
             }
             else
                 m_isJumping = false;
         }
-        
-        if(m_isGrounded)
-            m_rigidbody.AddForce(m_moveDirection * m_movementSpeed * 1000f * Time.fixedDeltaTime, ForceMode2D.Force);
+
+        m_rigidbody.velocity = new Vector2(m_moveDirection * m_movementSpeed, m_rigidbody.velocity.y);
+        //m_rigidbody.AddForce(m_moveDirection * m_movementSpeed * 1000f * Time.fixedDeltaTime, ForceMode2D.Force);
 
     }
 }
