@@ -37,7 +37,6 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         m_groundCheckPos = new Vector2(transform.position.x, transform.position.y - m_groundCheckPosY);
-        m_isGrounded = Physics2D.OverlapBox(m_groundCheckPos, m_groundCheckSize, m_groundLayer);
 
         m_moveDirection = new Vector2(Input.GetAxisRaw("Horizontal"), 0f);
 
@@ -54,10 +53,11 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        m_isGrounded = Physics2D.OverlapBox(m_groundCheckPos, m_groundCheckSize, 0f, m_groundLayer);
+
         m_rigidbody.AddForce(m_moveDirection * m_movementSpeed * 100f * Time.fixedDeltaTime, ForceMode2D.Force);
 
         m_rigidbody.AddForce(Vector2.up * m_jumpForce, ForceMode2D.Impulse);
-
     }
 
     private void OnDrawGizmos()
