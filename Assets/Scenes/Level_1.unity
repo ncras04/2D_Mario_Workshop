@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 1147810244}
   - component: {fileID: 1147810243}
   - component: {fileID: 1147810245}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -242,11 +242,11 @@ GameObject:
   m_Component:
   - component: {fileID: 1665095558}
   - component: {fileID: 1665095557}
+  - component: {fileID: 1665095559}
+  - component: {fileID: 1665095553}
   - component: {fileID: 1665095556}
   - component: {fileID: 1665095555}
   - component: {fileID: 1665095554}
-  - component: {fileID: 1665095553}
-  - component: {fileID: 1665095559}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -410,7 +410,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44f08d1bb9faece4ba5b2868baef71c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 6.5
+  m_jumpPos: 0
+  m_groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  m_movementSpeed: 0
 --- !u!1 &1692918416
 GameObject:
   m_ObjectHideFlags: 0
