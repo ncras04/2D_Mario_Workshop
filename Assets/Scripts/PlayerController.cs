@@ -77,7 +77,6 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
 
-
     }
 
     static void ClearConsole()
