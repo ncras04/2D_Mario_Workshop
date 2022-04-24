@@ -8,6 +8,10 @@ public class PlayerController : MonoBehaviour
     private Vector2 m_moveDirection;
 
     [SerializeField]
+    private float m_jumpTime;
+    private float m_jumpCounter;
+
+    [SerializeField]
     private float m_jumpForce;
 
     private bool m_isGrounded;
@@ -40,28 +44,33 @@ public class PlayerController : MonoBehaviour
 
         m_moveDirection = new Vector2(Input.GetAxisRaw("Horizontal"), 0f);
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (m_isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
-            m_jumpForce = 10;
-        }
-        else
-        {
-            m_jumpForce = 0;
+            m_isJumping = true;
+            m_jumpCounter = m_jumpTime;
         }
 
+        if (Input.GetKeyUp(KeyCode.Space))
+            m_isJumping = false;
     }
 
     private void FixedUpdate()
     {
         m_isGrounded = Physics2D.OverlapBox(m_groundCheckPos, m_groundCheckSize, 0f, m_groundLayer);
 
-        m_rigidbody.AddForce(m_moveDirection * m_movementSpeed * 100f * Time.fixedDeltaTime, ForceMode2D.Force);
+        if (m_isJumping)
+        {
+            if (m_jumpCounter > 0)
+            {
+                m_rigidbody.AddForce(Vector2.up * m_jumpForce * 10f, ForceMode2D.Impulse);
+                m_jumpCounter -= Time.fixedDeltaTime;
+            }
+            else
+                m_isJumping = false;
+        }
+        
+        if(m_isGrounded)
+            m_rigidbody.AddForce(m_moveDirection * m_movementSpeed * 1000f * Time.fixedDeltaTime, ForceMode2D.Force);
 
-        m_rigidbody.AddForce(Vector2.up * m_jumpForce, ForceMode2D.Impulse);
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawCube(m_groundCheckPos, m_groundCheckSize);
     }
 }
