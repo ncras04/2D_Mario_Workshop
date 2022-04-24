@@ -30,6 +30,12 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+
+        /*TODO:  Ground check box size ?? why doesnt it work on edges though...
+         /        Sprite Sheet setup und animation
+         /        tilemap für level
+         */
+        
         BoxCollider2D tmp = GetComponent<BoxCollider2D>();
         m_groundCheckPosY = tmp.size.y;
         m_groundCheckSize = new Vector2(tmp.size.x, 0.5f);
