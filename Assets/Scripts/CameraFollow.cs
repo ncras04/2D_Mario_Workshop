@@ -8,6 +8,8 @@ public class CameraFollow : MonoBehaviour
     private GameObject m_followObject;
     [SerializeField]
     private Vector2 m_offset;
+    [SerializeField]
+    private Vector2 m_centerOffset;
     private Rigidbody2D m_followRigidbody;
 
     private Vector2 m_followPos;
@@ -33,8 +35,8 @@ public class CameraFollow : MonoBehaviour
     {
         m_threshold = CalculateThreshold();
         m_followPos = m_followObject.transform.position;
-        float xDiff = Vector2.Distance(Vector2.right * transform.position.x, Vector2.right * m_followPos.x);
-        float yDiff = Vector2.Distance(Vector2.up * transform.position.y, Vector2.up * m_followPos.y);
+        float xDiff = Vector2.Distance(Vector2.right * (transform.position.x + m_centerOffset.x), Vector2.right * m_followPos.x);
+        float yDiff = Vector2.Distance(Vector2.up * (transform.position.y + m_centerOffset.y) , Vector2.up * m_followPos.y);
 
         float zPos = transform.position.z;
         m_newPos = transform.position;
@@ -45,7 +47,9 @@ public class CameraFollow : MonoBehaviour
             m_newPos.y = m_followPos.y;
 
         m_newPos.z = zPos;
-        transform.position = m_newPos;
+        m_speed = m_followRigidbody.velocity.magnitude;
+
+        transform.position = Vector3.MoveTowards(transform.position, m_newPos, m_speed * Time.deltaTime);
 
 
     }
@@ -60,7 +64,7 @@ public class CameraFollow : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(transform.position, CalculateThreshold() * 2);
+        Gizmos.DrawWireCube(transform.position + new Vector3(m_centerOffset.x, m_centerOffset.y), CalculateThreshold() * 2);
     }
 
 
