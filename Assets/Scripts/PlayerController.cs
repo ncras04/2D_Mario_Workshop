@@ -47,7 +47,9 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         m_groundCheckPos = new Vector2(transform.position.x, transform.position.y - m_groundCheckPosY * 0.5f) * transform.localScale;
-        m_isGrounded = Physics2D.OverlapBox(m_groundCheckPos, m_groundCheckSize * transform.localScale * 0.5f, 0f, m_groundLayer);
+        m_isGrounded = Physics2D.BoxCast(m_groundCheckPos, m_groundCheckSize, 0f, Vector2.down, 0f, m_groundLayer);
+        
+        //m_isGrounded = Physics2D.OverlapBox(m_groundCheckPos, m_groundCheckSize * transform.localScale * 0.5f, 0f, m_groundLayer);
 
         if (m_isJumping)
         {
@@ -94,10 +96,10 @@ public class PlayerController : MonoBehaviour
         clearMethod.Invoke(null, null);
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawSphere(m_groundCheckPos, 0.1f);
-        Gizmos.DrawCube(m_groundCheckPos, Physics2D.OverlapBox(m_groundCheckPos, m_groundCheckSize * transform.localScale, 0f, m_groundLayer).bounds.size);
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.DrawSphere(m_groundCheckPos, 0.1f);
+    //    Gizmos.DrawCube(m_groundCheckPos, Physics2D.OverlapBox(m_groundCheckPos, m_groundCheckSize * transform.localScale, 0f, m_groundLayer).bounds.size);
+    //}
 
 }
