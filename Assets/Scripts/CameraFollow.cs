@@ -11,7 +11,7 @@ public class CameraFollow : MonoBehaviour
     private Rigidbody2D m_followRigidbody;
 
     private Vector2 m_followPos;
-    private Vector2 m_newPos;
+    private Vector3 m_newPos;
     private Vector2 m_threshold;
 
     [SerializeField]
@@ -19,7 +19,7 @@ public class CameraFollow : MonoBehaviour
 
     private void Start()
     {
-        if (m_followObject is null)
+        if (m_followObject == null)
             m_followObject = FindObjectOfType<PlayerController>().gameObject;
 
         m_followRigidbody = m_followObject.GetComponent<Rigidbody2D>();
@@ -28,18 +28,39 @@ public class CameraFollow : MonoBehaviour
 
     }
 
-    private Vector2 CalculateThreshold()
-    {
-        throw new System.NotImplementedException();
-    }
 
     private void LateUpdate()
     {
-        
+        m_threshold = CalculateThreshold();
+        m_followPos = m_followObject.transform.position;
+        float xDiff = Vector2.Distance(Vector2.right * transform.position.x, Vector2.right * m_followPos.x);
+        float yDiff = Vector2.Distance(Vector2.up * transform.position.y, Vector2.up * m_followPos.y);
+
+        float zPos = transform.position.z;
+        m_newPos = transform.position;
+
+        if (Mathf.Abs(xDiff) >= m_threshold.x)
+            m_newPos.x = m_followPos.x;
+        if (Mathf.Abs(yDiff) >= m_threshold.y)
+            m_newPos.y = m_followPos.y;
+
+        m_newPos.z = zPos;
+        transform.position = m_newPos;
+
+
+    }
+    private Vector2 CalculateThreshold()
+    {
+        Rect aspect = Camera.main.pixelRect;
+        Vector2 tmp = new Vector2(Camera.main.orthographicSize * aspect.width / aspect.height, Camera.main.orthographicSize);
+        tmp -= m_offset;
+
+        return tmp;
     }
     private void OnDrawGizmos()
     {
-        
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(transform.position, CalculateThreshold() * 2);
     }
 
 
