@@ -43,18 +43,16 @@ public class CameraFollow : MonoBehaviour
 
         Debug.Log("X: " + xDiff + " " + m_threshold.x);
         Debug.Log("Y: " + yDiff + " " + m_threshold.y);
-        Debug.Log("");
 
         if (Mathf.Abs(xDiff) >= m_threshold.x)
             m_newPos.x = m_followPos.x + Mathf.Abs(m_centerOffset.x);
         if (Mathf.Abs(yDiff) >= m_threshold.y)
-            m_newPos.y = m_followPos.y + Mathf.Abs(m_centerOffset.y);
+            m_newPos.y = m_followPos.y;
 
         m_newPos.z = zPos;
         m_speed = m_followRigidbody.velocity.magnitude;
 
-        transform.position = m_newPos;
-        //transform.position = Vector3.MoveTowards(transform.position, m_newPos, m_speed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, m_newPos, m_speed * Time.deltaTime);
 
 
     }
