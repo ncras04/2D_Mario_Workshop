@@ -664,7 +664,7 @@ MonoBehaviour:
   m_groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  m_movementSpeed: 10
+  m_movementSpeed: 1000
 --- !u!1 &1692918416
 GameObject:
   m_ObjectHideFlags: 0

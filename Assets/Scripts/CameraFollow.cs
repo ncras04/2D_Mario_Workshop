@@ -38,7 +38,7 @@ public class CameraFollow : MonoBehaviour
 
         float xDiff = Vector2.Distance(Vector2.right * (transform.position.x + m_centerOffset.x), Vector2.right * m_followPos.x);
         float yDiff = Vector2.Distance(Vector2.up * (transform.position.y + m_centerOffset.y), Vector2.up * m_followPos.y);
-        
+
         m_newPos = transform.position;
 
         if (Mathf.Abs(xDiff) >= m_threshold.x)
@@ -46,8 +46,10 @@ public class CameraFollow : MonoBehaviour
         if (Mathf.Abs(yDiff) >= m_threshold.y)
             m_newPos.y = m_followPos.y;
 
+        Debug.Log("Camera: " + Time.unscaledDeltaTime);
+
         transform.position = Vector3.MoveTowards(transform.position, m_newPos, m_followRigidbody.velocity.magnitude * Time.unscaledDeltaTime);
-            }
+    }
 
     private Vector2 CalculateThreshold()
     {

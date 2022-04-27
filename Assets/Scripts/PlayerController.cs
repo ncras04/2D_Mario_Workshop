@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour
     {
         m_groundCheckPos = new Vector2(transform.position.x, transform.position.y - m_groundCheckPosY * 0.5f) * transform.localScale;
         m_isGrounded = Physics2D.BoxCast(m_groundCheckPos, m_groundCheckSize, 0f, Vector2.down, 0f, m_groundLayer);
-        
+
         //m_isGrounded = Physics2D.OverlapBox(m_groundCheckPos, m_groundCheckSize * transform.localScale * 0.5f, 0f, m_groundLayer);
         m_moveDirection = Input.GetAxisRaw("Horizontal");
 
@@ -70,11 +70,13 @@ public class PlayerController : MonoBehaviour
                 m_isJumping = false;
         }
 
-        m_rigidbody.velocity = new Vector2(m_moveDirection * m_movementSpeed, m_rigidbody.velocity.y);
+        m_rigidbody.velocity = new Vector2(m_moveDirection * m_movementSpeed * Time.deltaTime, m_rigidbody.velocity.y);
         //m_rigidbody.AddForce(m_moveDirection * m_movementSpeed * 1000f * Time.fixedDeltaTime, ForceMode2D.Force);
 
         if (Input.GetKeyUp(KeyCode.Space))
             m_isJumping = false;
+
+        Debug.Log("Player: " + Time.deltaTime);
     }
 
     private void FixedUpdate()
