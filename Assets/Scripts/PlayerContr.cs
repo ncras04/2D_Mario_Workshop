@@ -7,8 +7,7 @@ public class PlayerContr : MonoBehaviour
     public float MovementSpeed = 8.0f;
     public float JumpPower = 8.0f;
 
-    public float HorizontalDirection = 0.0f;
-    public float VerticalDirection = 0.0f;
+    private float horizontalDirection;
 
     public float JumpTime;
     private float jumpCounter;
@@ -22,7 +21,9 @@ public class PlayerContr : MonoBehaviour
     private Vector2 groundCheckPos;
     private float groundCheckPosY;
 
-    public LayerMask groundLayer;
+    public LayerMask groundAndEnemyLayer;
+
+    RaycastHit2D hit;
 
     // Start is called before the first frame update
     void Start()
@@ -30,7 +31,6 @@ public class PlayerContr : MonoBehaviour
         BoxCollider2D tmp = GetComponent<BoxCollider2D>();
         groundCheckPosY = tmp.size.y;
         groundCheckSize = new Vector2(tmp.size.x, 0.5f);
-        groundCheckPos = new Vector2(transform.position.x, transform.position.y - groundCheckPosY * 0.5f) * transform.localScale;
 
         rb = GetComponent<Rigidbody2D>();
     }
@@ -38,9 +38,21 @@ public class PlayerContr : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        isGrounded = Physics2D.BoxCast(groundCheckPos, groundCheckSize, 0f, Vector2.down, 0f, groundLayer);
+        groundCheckPos = new Vector2(transform.position.x, transform.position.y - groundCheckPosY * 0.5f) * transform.localScale;
 
-        HorizontalDirection = Input.GetAxis("Horizontal") * (MovementSpeed * Time.deltaTime);
+        hit = Physics2D.BoxCast(groundCheckPos, groundCheckSize, 0f, Vector2.down, 0f, groundAndEnemyLayer);
+
+        if (!isGrounded && hit.collider)
+        {
+            if (hit.collider.CompareTag("Enemy"))
+                Destroy(hit.collider.gameObject);
+        }
+
+        isGrounded = hit;
+
+        Debug.Log(isGrounded);
+
+        horizontalDirection = Input.GetAxisRaw("Horizontal") * MovementSpeed;
 
         if (isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
@@ -59,13 +71,14 @@ public class PlayerContr : MonoBehaviour
                 isJumping = false;
         }
 
+        rb.velocity = new Vector2(horizontalDirection, rb.velocity.y);
 
-        if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
-        {
-            rb.AddForce(Vector2.up * JumpPower, ForceMode2D.Impulse);
-            isJumping = true;
-        }
+        if (Input.GetKeyUp(KeyCode.Space))
+            isJumping = false;
+    }
 
-        rb.velocity = new Vector2(HorizontalDirection, rb.velocity.y);
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireCube(groundCheckPos, groundCheckSize);
     }
 }

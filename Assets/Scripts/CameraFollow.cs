@@ -46,8 +46,6 @@ public class CameraFollow : MonoBehaviour
         if (Mathf.Abs(yDiff) >= m_threshold.y)
             m_newPos.y = m_followPos.y;
 
-        Debug.Log("Camera: " + Time.unscaledDeltaTime);
-
         transform.position = Vector3.MoveTowards(transform.position, m_newPos, m_followRigidbody.velocity.magnitude * Time.unscaledDeltaTime);
     }
 
