@@ -759,6 +759,7 @@ GameObject:
   - component: {fileID: 1692918418}
   - component: {fileID: 1692918417}
   - component: {fileID: 1692918420}
+  - component: {fileID: 1692918421}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -847,6 +848,19 @@ MonoBehaviour:
   m_followObject: {fileID: 0}
   m_offset: {x: 5, y: 3.98}
   m_centerOffset: {x: -5.97, y: 0}
+--- !u!114 &1692918421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1692918416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 484d0e26c70d3dd4c821c7016d8f9004, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  followTarget: {fileID: 1801919786}
 --- !u!1 &1801919782
 GameObject:
   m_ObjectHideFlags: 0
@@ -879,7 +893,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MovementSpeed: 8
+  JumpPower: 6
   HorizontalDirection: 0
+  VerticalDirection: 0
 --- !u!50 &1801919784
 Rigidbody2D:
   serializedVersion: 4
@@ -900,7 +916,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!70 &1801919785
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
