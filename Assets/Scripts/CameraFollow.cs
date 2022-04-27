@@ -16,8 +16,8 @@ public class CameraFollow : MonoBehaviour
     private Vector3 m_newPos;
     private Vector2 m_threshold;
 
-    [SerializeField]
-    private float m_speed;
+    private Vector3 m_vel;
+    private Transform m_followTransform;
 
     private void Start()
     {
@@ -26,36 +26,29 @@ public class CameraFollow : MonoBehaviour
 
         m_followRigidbody = m_followObject.GetComponent<Rigidbody2D>();
 
+        m_followTransform = m_followObject.transform;
+
         m_threshold = CalculateThreshold();
 
     }
 
-
     private void LateUpdate()
     {
-        m_threshold = CalculateThreshold();
-        m_followPos = m_followObject.transform.position;
+        m_followPos = m_followTransform.position;
+
         float xDiff = Vector2.Distance(Vector2.right * (transform.position.x + m_centerOffset.x), Vector2.right * m_followPos.x);
         float yDiff = Vector2.Distance(Vector2.up * (transform.position.y + m_centerOffset.y), Vector2.up * m_followPos.y);
-
-        float zPos = transform.position.z;
+        
         m_newPos = transform.position;
-
-        Debug.Log("X: " + xDiff + " " + m_threshold.x);
-        Debug.Log("Y: " + yDiff + " " + m_threshold.y);
 
         if (Mathf.Abs(xDiff) >= m_threshold.x)
             m_newPos.x = m_followPos.x + Mathf.Abs(m_centerOffset.x);
         if (Mathf.Abs(yDiff) >= m_threshold.y)
             m_newPos.y = m_followPos.y;
 
-        m_newPos.z = zPos;
-        m_speed = m_followRigidbody.velocity.magnitude;
+        transform.position = Vector3.MoveTowards(transform.position, m_newPos, m_followRigidbody.velocity.magnitude * Time.unscaledDeltaTime);
+            }
 
-        transform.position = Vector3.MoveTowards(transform.position, m_newPos, m_speed * Time.deltaTime);
-
-
-    }
     private Vector2 CalculateThreshold()
     {
         Rect aspect = Camera.main.pixelRect;
