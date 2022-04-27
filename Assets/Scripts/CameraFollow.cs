@@ -7,61 +7,38 @@ public class CameraFollow : MonoBehaviour
     [SerializeField]
     private GameObject m_followObject;
     [SerializeField]
-    private Vector2 m_offset;
+    private Vector2 centerOffset;
+    private Rigidbody2D followRigidbody;
+    private Transform followTransform;
+
+    private Vector3 currentVelocity;
+
+    Vector3 tempPos;
+
     [SerializeField]
-    private Vector2 m_centerOffset;
-    private Rigidbody2D m_followRigidbody;
-
-    private Vector2 m_followPos;
-    private Vector3 m_newPos;
-    private Vector2 m_threshold;
-
-    private Vector3 m_vel;
-    private Transform m_followTransform;
+    float smoothTime;
 
     private void Start()
     {
         if (m_followObject == null)
-            m_followObject = FindObjectOfType<PlayerController>().gameObject;
+            m_followObject = FindObjectOfType<PlayerContr>().gameObject;
 
-        m_followRigidbody = m_followObject.GetComponent<Rigidbody2D>();
+        followRigidbody = m_followObject.GetComponent<Rigidbody2D>();
 
-        m_followTransform = m_followObject.transform;
-
-        m_threshold = CalculateThreshold();
-
+        followTransform = m_followObject.transform;
     }
-
     private void LateUpdate()
     {
-        m_followPos = m_followTransform.position;
+        if (followRigidbody.velocity.x != 0)
+            centerOffset.x = Mathf.Abs(centerOffset.x) * (Mathf.Abs(followRigidbody.velocity.x) / followRigidbody.velocity.x);
 
-        float xDiff = Vector2.Distance(Vector2.right * (transform.position.x + m_centerOffset.x), Vector2.right * m_followPos.x);
-        float yDiff = Vector2.Distance(Vector2.up * (transform.position.y + m_centerOffset.y), Vector2.up * m_followPos.y);
-
-        m_newPos = transform.position;
-
-        if (Mathf.Abs(xDiff) >= m_threshold.x)
-            m_newPos.x = m_followPos.x + Mathf.Abs(m_centerOffset.x);
-        if (Mathf.Abs(yDiff) >= m_threshold.y)
-            m_newPos.y = m_followPos.y;
-
-        transform.position = Vector3.MoveTowards(transform.position, m_newPos, m_followRigidbody.velocity.magnitude * Time.unscaledDeltaTime);
+        tempPos = new Vector3(followTransform.position.x + centerOffset.x, transform.position.y + centerOffset.y, transform.position.z);
     }
-
-    private Vector2 CalculateThreshold()
+    private void FixedUpdate()
     {
-        Rect aspect = Camera.main.pixelRect;
-        Vector2 tmp = new Vector2(Camera.main.orthographicSize * aspect.width / aspect.height, Camera.main.orthographicSize);
-        tmp -= m_offset;
+        transform.position = Vector3.SmoothDamp(transform.position, tempPos, ref currentVelocity, smoothTime);
+    }
 
-        return tmp;
-    }
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(transform.position + new Vector3(m_centerOffset.x, m_centerOffset.y), CalculateThreshold() * 2);
-    }
 
 
 

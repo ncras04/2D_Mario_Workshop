@@ -6,16 +6,17 @@ public class FollowCam : MonoBehaviour
 {
     [SerializeField]
     private Transform followTarget;
-    // Start is called before the first frame update
+    [SerializeField]
+    private float offset;
+
     void Start()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        Vector3 tempPos = new Vector3(followTarget.position.x, followTarget.position.y, -10);
+        Vector3 tempPos = new Vector3(followTarget.position.x + offset, transform.position.y, transform.position.z);
         transform.position = tempPos;
     }
 }
