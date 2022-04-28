@@ -2350,9 +2350,9 @@ GameObject:
   - component: {fileID: 934539603}
   - component: {fileID: 934539604}
   m_Layer: 0
-  m_Name: CamMin
+  m_Name: Camera Minimum Pos
   m_TagString: Untagged
-  m_Icon: {fileID: 7148428337604731935, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -2668,9 +2668,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1580417303}
   m_Layer: 0
-  m_Name: CamMax
+  m_Name: Camera Maximum Pos
   m_TagString: Untagged
-  m_Icon: {fileID: 7148428337604731935, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -2682,7 +2682,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1580417302}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 19.81, y: 0, z: 9.3193245}
+  m_LocalPosition: {x: 32.7, y: 0, z: 9.3193245}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1836966465}
@@ -2881,7 +2881,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 4
+  orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2926,7 +2926,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   followObject: {fileID: 0}
-  centerOffset: {x: 5, y: 1.5}
+  centerOffset: {x: 5, y: 3}
   minPos: {fileID: 934539603}
   maxPos: {fileID: 1580417303}
   smoothTime: 0.05
