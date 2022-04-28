@@ -2,10 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Game : MonoBehaviour
 {
     public static Game Manager { get; private set; }
+
+    [SerializeField]
+    float counter;
 
     private void Awake()
     {
@@ -31,14 +35,21 @@ public class Game : MonoBehaviour
     {
         if(PlayerContr.Player.CurrentState == EPlayerStates.DEAD)
         {
+            ChangeMainMenu();
             Time.timeScale = 0;
         }    
 
     }
 
-    private void ChangeScene()
+    public void GetCoin()
     {
 
     }
+    public void ChangeMainMenu()
+    {
+        counter -= Time.unscaledDeltaTime;
 
+        if (counter < 0)
+            SceneManager.LoadScene(0);
+    }
 }

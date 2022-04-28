@@ -276,7 +276,6 @@ public class PlayerContr : MonoBehaviour
         }
 
         if (collision.collider.CompareTag("DeathZone"))
-            if (currentState != EPlayerStates.FALLING)
                 currentState = EPlayerStates.KILLED;
 
         if (collision.collider.CompareTag("Coin"))
