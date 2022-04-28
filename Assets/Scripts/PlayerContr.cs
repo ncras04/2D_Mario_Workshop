@@ -98,16 +98,15 @@ public class PlayerContr : MonoBehaviour
                 sprite.flipX = true;
 
             Move();
-            CheckCoin();
-
         }
 
         currentState = CheckState(currentState);
     }
 
-    private void CheckCoin()
+    private void GetCoin()
     {
-
+        //GameManager.AddCoin
+        Audio.Manager.PlaySound(ESounds.COIN);
     }
 
     private EPlayerStates CheckState(EPlayerStates _currentState)
@@ -279,5 +278,20 @@ public class PlayerContr : MonoBehaviour
         if (collision.collider.CompareTag("DeathZone"))
             if (currentState != EPlayerStates.FALLING)
                 currentState = EPlayerStates.KILLED;
+
+        if (collision.collider.CompareTag("Coin"))
+        {
+            GetCoin();
+        }
+
+        if (collision.collider.CompareTag("Block"))
+        {
+            if (currentState == EPlayerStates.JUMPING)
+            {
+                if (collision.gameObject.GetComponent<Block>().isAlive)
+                    GetCoin();
+                currentState = EPlayerStates.FALLING;
+            }
+        }
     }
 }

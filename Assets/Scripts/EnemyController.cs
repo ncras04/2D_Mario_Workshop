@@ -29,7 +29,7 @@ public class EnemyController : MonoBehaviour
         BoxCollider2D tmp = GetComponent<BoxCollider2D>();
         animator = GetComponentInChildren<Animator>();
         wallCheckPosX = tmp.size.x * 0.5f;
-        wallCheckSize = new Vector2(tmp.size.y * 0.5f, 0.5f);
+        wallCheckSize = new Vector2(0.5f, tmp.size.y * 0.5f);
 
         rb = GetComponent<Rigidbody2D>();
 
