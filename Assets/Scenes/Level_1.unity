@@ -621,6 +621,62 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &609996876
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 609996878}
+  - component: {fileID: 609996877}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &609996877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 609996876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4062310a3676efb4bbda870ba2211cd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundfileReferences:
+  - sound: 0
+    audioClip: {fileID: 8300000, guid: 2918e51bb85dd024fa295b2f58741057, type: 3}
+    volume: 100
+  - sound: 3
+    audioClip: {fileID: 8300000, guid: f9d591de2718b9743bdfc50fcf50e200, type: 3}
+    volume: 100
+  - sound: 4
+    audioClip: {fileID: 8300000, guid: 1c55d420371b90b4f985e0d74b69bde2, type: 3}
+    volume: 100
+  bgmClip: {fileID: 8300000, guid: 27b6d2415f9af5d40a0e7daa95015abc, type: 3}
+  bgmVolume: 60
+  mixer: {fileID: 24300002, guid: 953327a073f76f04c985f9446032cdd5, type: 2}
+--- !u!4 &609996878
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 609996876}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.2928967, y: -0.17353469, z: -0.9003904}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &934539602
 GameObject:
   m_ObjectHideFlags: 0
@@ -1246,7 +1302,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78896d7ffedc8ed41a94811a2d5d1c96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MovementSpeed: 10
+  MovementSpeed: 8
   JumpForce: 8
   ReboundForce: 15
   horizontalDirection: 0
@@ -1279,9 +1335,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1692918419}
   - component: {fileID: 1692918418}
-  - component: {fileID: 1692918417}
   - component: {fileID: 1692918420}
   - component: {fileID: 1692918421}
+  - component: {fileID: 1692918417}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera

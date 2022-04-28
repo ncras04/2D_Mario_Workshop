@@ -73,7 +73,7 @@ public class PlayerContr : MonoBehaviour
 
     private void CheckCoin()
     {
-        
+
     }
 
     private EPlayerStates CheckState(EPlayerStates _currentState)
@@ -136,6 +136,8 @@ public class PlayerContr : MonoBehaviour
                 }
             case EPlayerStates.DEAD:
                 {
+                    Audio.Manager.StopBGM();
+                    Audio.Manager.PlaySound(ESounds.DEATH);
                     Destroy(this.gameObject);
                     return EPlayerStates.DEAD;
                 }
@@ -175,6 +177,7 @@ public class PlayerContr : MonoBehaviour
         if (hit.collider.CompareTag("Enemy"))
         {
             rb.velocity = Vector2.up * ReboundForce;
+            Audio.Manager.PlaySound(ESounds.KILLENEMY);
             Destroy(hit.collider.gameObject);
             return true;
         }
@@ -192,9 +195,27 @@ public class PlayerContr : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             jumpCounter = JumpTime;
+            Audio.Manager.PlaySound(ESounds.JUMP);
             return true;
         }
 
         return false;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Enemy"))
+        {
+            if (currentState != EPlayerStates.FALLING)
+                currentState = EPlayerStates.DEAD;
+            else
+            {
+                rb.velocity = Vector2.up * ReboundForce;
+                Audio.Manager.PlaySound(ESounds.KILLENEMY);
+                Destroy(hit.collider.gameObject);
+            }
+        }
+
+
     }
 }
