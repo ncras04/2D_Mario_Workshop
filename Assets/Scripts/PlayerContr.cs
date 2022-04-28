@@ -1,31 +1,53 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EPlayerStates
+{
+    IDLE,
+    WALKING,
+    JUMPING,
+    FALLING,
+    DEAD,
+}
+
 public class PlayerContr : MonoBehaviour
 {
-    public float MovementSpeed = 8.0f;
-    public float JumpPower = 8.0f;
+    public EPlayerStates CurrentState => currentState;
 
+    public float HorizontalDir => horizontalDirection;
+
+    [SerializeField]
+    private float MovementSpeed = 8.0f;
+    [SerializeField]
+    private float JumpForce = 8.0f;
+
+    [SerializeField]
+    private float ReboundForce = 3.0f;
+
+    [SerializeField]
     private float horizontalDirection;
 
-    public float JumpTime;
+    [SerializeField]
+    private float JumpTime;
     private float jumpCounter;
 
 
     private Rigidbody2D rb;
-    private bool isJumping = false;
     private bool isGrounded;
 
     private Vector2 groundCheckSize;
     private Vector2 groundCheckPos;
     private float groundCheckPosY;
 
-    public LayerMask groundAndEnemyLayer;
+    [SerializeField]
+    private LayerMask groundAndEnemyLayer;
 
-    RaycastHit2D hit;
+    private RaycastHit2D hit;
 
-    // Start is called before the first frame update
+    private EPlayerStates currentState;
+
     void Start()
     {
         BoxCollider2D tmp = GetComponent<BoxCollider2D>();
@@ -35,50 +57,135 @@ public class PlayerContr : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        groundCheckPos = new Vector2(transform.position.x, transform.position.y - groundCheckPosY * 0.5f) * transform.localScale;
 
+        horizontalDirection = Input.GetAxisRaw("Horizontal");
+
+        currentState = CheckState(currentState);
+
+        groundCheckPos = new Vector2(transform.position.x, transform.position.y - groundCheckPosY * 0.5f) * transform.localScale;
         hit = Physics2D.BoxCast(groundCheckPos, groundCheckSize, 0f, Vector2.down, 0f, groundAndEnemyLayer);
 
-        if (!isGrounded && hit.collider)
+        if (hit.collider)
+        {
+            isGrounded = hit.collider.CompareTag("Ground");
+        }
+        Debug.Log(currentState);
+    }
+
+    private EPlayerStates CheckState(EPlayerStates _currentState)
+    {
+        switch (_currentState)
+        {
+            case EPlayerStates.IDLE:
+                {
+                    Move();
+                    if (horizontalDirection != 0)
+                        return EPlayerStates.WALKING;
+
+                    if (CheckJump())
+                    {
+                        Jump();
+                        return EPlayerStates.JUMPING;
+                    }
+
+                    if (!isGrounded)
+                        return EPlayerStates.FALLING;
+
+                    return EPlayerStates.IDLE;
+                }
+            case EPlayerStates.WALKING:
+                {
+                    Move();
+                    if (CheckJump())
+                    {
+                        Jump();
+                        return EPlayerStates.JUMPING;
+                    }
+
+                    if (horizontalDirection != 0)
+                        return EPlayerStates.WALKING;
+
+                    return EPlayerStates.IDLE;
+                }
+            case EPlayerStates.JUMPING:
+                {
+                    Move();
+                    return Jump();
+                }
+            case EPlayerStates.FALLING:
+                {
+                    Move();
+                    CheckEnemy();
+
+                    if (!isGrounded)
+                    {
+                        return EPlayerStates.FALLING;
+                    }
+
+                    return EPlayerStates.IDLE;
+                }
+            case EPlayerStates.DEAD:
+                {
+                    return EPlayerStates.DEAD;
+                }
+
+            default:
+                return EPlayerStates.IDLE;
+        }
+    }
+
+    private EPlayerStates Jump()
+    {
+        if (jumpCounter > 0)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, JumpForce);
+            jumpCounter -= Time.deltaTime;
+
+            if (Input.GetKeyUp(KeyCode.Space))
+            {
+                CheckEnemy();
+                return EPlayerStates.FALLING;
+            }
+            return EPlayerStates.JUMPING;
+        }
+
+        CheckEnemy();
+        return EPlayerStates.FALLING;
+    }
+
+    private void CheckEnemy()
+    {
+        if (hit.collider)
         {
             if (hit.collider.CompareTag("Enemy"))
-                Destroy(hit.collider.gameObject);
-        }
-
-        isGrounded = hit;
-
-        Debug.Log(isGrounded);
-
-        horizontalDirection = Input.GetAxisRaw("Horizontal") * MovementSpeed;
-
-        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
-        {
-            isJumping = true;
-            jumpCounter = JumpTime;
-        }
-
-        if (isJumping)
-        {
-            if (jumpCounter > 0)
             {
-                rb.velocity = Vector2.up * JumpPower;
-                jumpCounter -= Time.deltaTime;
+                rb.velocity = Vector2.up * ReboundForce;
+                Destroy(hit.collider.gameObject);
             }
-            else
-                isJumping = false;
+        }
+    }
+
+    private void Move()
+    {
+        rb.velocity = new Vector2(horizontalDirection * MovementSpeed, rb.velocity.y);
+    }
+
+    private bool CheckJump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            jumpCounter = JumpTime;
+            return true;
         }
 
-        rb.velocity = new Vector2(horizontalDirection, rb.velocity.y);
-
-        if (Input.GetKeyUp(KeyCode.Space))
-            isJumping = false;
+        return false;
     }
 
     private void OnDrawGizmos()
     {
+
         Gizmos.DrawWireCube(groundCheckPos, groundCheckSize);
     }
 }
