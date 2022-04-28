@@ -281,6 +281,7 @@ public class PlayerContr : MonoBehaviour
 
         if (collision.collider.CompareTag("Coin"))
         {
+            Destroy(collision.gameObject.transform.parent.gameObject);
             GetCoin();
         }
 
