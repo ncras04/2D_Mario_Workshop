@@ -48,18 +48,31 @@ public class PlayerContr : MonoBehaviour
 
     private EPlayerStates currentState;
 
+    private SpriteRenderer sprite;
+
+    [SerializeField]
+    private Animator animator;
+
     void Start()
     {
+        sprite = GetComponentInChildren<SpriteRenderer>();
         BoxCollider2D tmp = GetComponent<BoxCollider2D>();
         groundCheckPosY = tmp.size.y;
         groundCheckSize = new Vector2(tmp.size.x, 0.5f);
 
         rb = GetComponent<Rigidbody2D>();
+
+        animator.SetTrigger("Idle");
     }
 
     void Update()
     {
         horizontalDirection = Input.GetAxisRaw("Horizontal");
+
+        if (horizontalDirection > 0)
+            sprite.flipX = false;
+        else if (horizontalDirection < 0)
+            sprite.flipX = true;
 
         groundCheckPos = new Vector2(transform.position.x, transform.position.y - groundCheckPosY * 0.5f) * transform.localScale;
         hit = BoxCast.Cast(groundCheckPos, groundCheckSize, 0f, Vector2.down, 0.1f, groundAndEnemyLayer);
@@ -82,41 +95,61 @@ public class PlayerContr : MonoBehaviour
         {
             case EPlayerStates.IDLE:
                 {
+                    animator.SetTrigger("Idle");
+
                     if (CheckEnemy())
                         return EPlayerStates.DEAD;
 
                     if (rb.velocity.x != 0)
+                    {
+                        animator.ResetTrigger("Idle");
                         return EPlayerStates.WALKING;
+                    }
 
                     if (CheckJump())
                     {
                         Jump();
+                        animator.ResetTrigger("Idle");
                         return EPlayerStates.JUMPING;
                     }
 
                     if (!isGrounded)
+                    {
+                        animator.ResetTrigger("Idle");
                         return EPlayerStates.FALLING;
+                    }
 
                     return EPlayerStates.IDLE;
                 }
             case EPlayerStates.WALKING:
                 {
+                    animator.SetTrigger("Running");
+
                     if (CheckEnemy())
+                    {
+                        animator.ResetTrigger("Running");
                         return EPlayerStates.DEAD;
+                    }
 
                     if (CheckJump())
                     {
                         Jump();
+                        animator.ResetTrigger("Running");
                         return EPlayerStates.JUMPING;
                     }
 
                     if (rb.velocity.x != 0)
+                    {
                         return EPlayerStates.WALKING;
+                    }
 
+                    animator.ResetTrigger("Running");
                     return EPlayerStates.IDLE;
                 }
             case EPlayerStates.JUMPING:
                 {
+                    animator.SetTrigger("Jump");
+
                     if (CheckEnemy())
                         return EPlayerStates.DEAD;
 
@@ -138,7 +171,6 @@ public class PlayerContr : MonoBehaviour
                 {
                     Audio.Manager.StopBGM();
                     Audio.Manager.PlaySound(ESounds.DEATH);
-                    Destroy(this.gameObject);
                     return EPlayerStates.DEAD;
                 }
 
@@ -164,11 +196,13 @@ public class PlayerContr : MonoBehaviour
 
             if (Input.GetKeyUp(KeyCode.Space))
             {
+                animator.ResetTrigger("Jump");
                 return EPlayerStates.FALLING;
             }
             return EPlayerStates.JUMPING;
         }
 
+        animator.ResetTrigger("Jump");
         return EPlayerStates.FALLING;
     }
 
@@ -219,7 +253,5 @@ public class PlayerContr : MonoBehaviour
         if (collision.collider.CompareTag("DeathZone"))
             if (currentState != EPlayerStates.FALLING)
                 currentState = EPlayerStates.DEAD;
-
-
     }
 }
