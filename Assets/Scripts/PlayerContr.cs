@@ -48,8 +48,6 @@ public class PlayerContr : MonoBehaviour
 
     private EPlayerStates currentState;
 
-    private float xVelocity;
-
     void Start()
     {
         BoxCollider2D tmp = GetComponent<BoxCollider2D>();
@@ -69,13 +67,13 @@ public class PlayerContr : MonoBehaviour
         isGrounded = hit.collider;
 
         Move();
-        //CheckCoin();
+        CheckCoin();
         currentState = CheckState(currentState);
     }
 
     private void CheckCoin()
     {
-        throw new NotImplementedException();
+        
     }
 
     private EPlayerStates CheckState(EPlayerStates _currentState)
@@ -146,7 +144,6 @@ public class PlayerContr : MonoBehaviour
                 return EPlayerStates.IDLE;
         }
     }
-
     private bool CheckEnemy()
     {
         if (hit.collider)

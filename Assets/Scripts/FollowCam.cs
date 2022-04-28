@@ -11,7 +11,6 @@ public class FollowCam : MonoBehaviour
 
     void Start()
     {
-        
     }
 
     void LateUpdate()
