@@ -32,16 +32,18 @@ public class CameraFollow : MonoBehaviour
         followRigidbody = m_followObject.GetComponent<Rigidbody2D>();
 
         followTransform = m_followObject.transform;
+
+        transform.position = new Vector3(followTransform.position.x + centerOffset.x, transform.position.y + centerOffset.y, transform.position.z);
     }
     private void LateUpdate()
     {
         if (followRigidbody.velocity.x != 0)
             centerOffset.x = Mathf.Abs(centerOffset.x) * (Mathf.Abs(followRigidbody.velocity.x) / followRigidbody.velocity.x);
 
-        newPos = new Vector3(followTransform.position.x + centerOffset.x, transform.position.y + centerOffset.y, transform.position.z);
+        newPos = new Vector3(followTransform.position.x + centerOffset.x, transform.position.y, transform.position.z);
 
         clampPos = new Vector3(Mathf.Clamp(newPos.x, minPos.position.x, maxPos.position.x),
-                               Mathf.Clamp(newPos.y, minPos.position.y, maxPos.position.y),
+                               transform.position.y,
                                transform.position.z);
     }
     private void FixedUpdate()

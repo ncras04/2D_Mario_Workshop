@@ -63,5 +63,12 @@ public class EnemyController : MonoBehaviour
     {
         rb.velocity = new Vector2(movementSpeed, rb.velocity.y);
     }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("DeathZone"))
+            Destroy(gameObject);
+
+        return;
+    }
 }
 

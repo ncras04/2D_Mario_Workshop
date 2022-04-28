@@ -216,6 +216,10 @@ public class PlayerContr : MonoBehaviour
             }
         }
 
+        if (collision.collider.CompareTag("DeathZone"))
+            if (currentState != EPlayerStates.FALLING)
+                currentState = EPlayerStates.DEAD;
+
 
     }
 }
