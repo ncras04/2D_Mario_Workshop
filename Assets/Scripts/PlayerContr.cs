@@ -9,6 +9,7 @@ public enum EPlayerStates
     WALKING,
     JUMPING,
     FALLING,
+    KILLED,
     DEAD,
 }
 
@@ -53,6 +54,18 @@ public class PlayerContr : MonoBehaviour
     [SerializeField]
     private Animator animator;
 
+    public static PlayerContr Player { get; private set; }
+
+    private void Awake()
+    {
+        if (Player != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Player = this;
+    }
+
     void Start()
     {
         sprite = GetComponentInChildren<SpriteRenderer>();
@@ -63,24 +76,32 @@ public class PlayerContr : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
 
         animator.SetTrigger("Idle");
+        animator.SetFloat("Death", 1);
     }
 
     void Update()
     {
         horizontalDirection = Input.GetAxisRaw("Horizontal");
 
-        if (horizontalDirection > 0)
-            sprite.flipX = false;
-        else if (horizontalDirection < 0)
-            sprite.flipX = true;
 
         groundCheckPos = new Vector2(transform.position.x, transform.position.y - groundCheckPosY * 0.5f) * transform.localScale;
         hit = BoxCast.Cast(groundCheckPos, groundCheckSize, 0f, Vector2.down, 0.1f, groundAndEnemyLayer);
 
         isGrounded = hit.collider;
 
-        Move();
-        CheckCoin();
+        if (currentState != EPlayerStates.DEAD)
+        {
+
+            if (horizontalDirection > 0)
+                sprite.flipX = false;
+            else if (horizontalDirection < 0)
+                sprite.flipX = true;
+
+            Move();
+            CheckCoin();
+
+        }
+
         currentState = CheckState(currentState);
     }
 
@@ -98,7 +119,7 @@ public class PlayerContr : MonoBehaviour
                     animator.SetTrigger("Idle");
 
                     if (CheckEnemy())
-                        return EPlayerStates.DEAD;
+                        return EPlayerStates.KILLED;
 
                     if (rb.velocity.x != 0)
                     {
@@ -128,7 +149,7 @@ public class PlayerContr : MonoBehaviour
                     if (CheckEnemy())
                     {
                         animator.ResetTrigger("Running");
-                        return EPlayerStates.DEAD;
+                        return EPlayerStates.KILLED;
                     }
 
                     if (CheckJump())
@@ -151,7 +172,7 @@ public class PlayerContr : MonoBehaviour
                     animator.SetTrigger("Jump");
 
                     if (CheckEnemy())
-                        return EPlayerStates.DEAD;
+                        return EPlayerStates.KILLED;
 
                     return Jump();
                 }
@@ -167,10 +188,15 @@ public class PlayerContr : MonoBehaviour
 
                     return EPlayerStates.FALLING;
                 }
-            case EPlayerStates.DEAD:
+            case EPlayerStates.KILLED:
                 {
                     Audio.Manager.StopBGM();
                     Audio.Manager.PlaySound(ESounds.DEATH);
+                    animator.SetFloat("Death", 0);
+                    return EPlayerStates.DEAD;
+                }
+            case EPlayerStates.DEAD:
+                {
                     return EPlayerStates.DEAD;
                 }
 
@@ -241,7 +267,7 @@ public class PlayerContr : MonoBehaviour
         if (collision.collider.CompareTag("Enemy"))
         {
             if (currentState != EPlayerStates.FALLING)
-                currentState = EPlayerStates.DEAD;
+                currentState = EPlayerStates.KILLED;
             else
             {
                 rb.velocity = Vector2.up * ReboundForce;
@@ -252,6 +278,6 @@ public class PlayerContr : MonoBehaviour
 
         if (collision.collider.CompareTag("DeathZone"))
             if (currentState != EPlayerStates.FALLING)
-                currentState = EPlayerStates.DEAD;
+                currentState = EPlayerStates.KILLED;
     }
 }
