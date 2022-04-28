@@ -3,13 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class Game : MonoBehaviour
 {
     public static Game Manager { get; private set; }
 
     [SerializeField]
-    float counter;
+    float switchToMainMenuCount;
+
+    [SerializeField]
+    TextMeshProUGUI coinUI;
+
+    private int coinAmount = 0;
 
 
 
@@ -35,7 +41,6 @@ public class Game : MonoBehaviour
 
     private void Update()
     {
-
         if(PlayerContr.Player.CurrentState == EPlayerStates.DEAD)
         {
             ChangeMainMenu();
@@ -46,13 +51,15 @@ public class Game : MonoBehaviour
 
     public void GetCoin()
     {
-
+        coinAmount += 1;
+        coinUI.text = "Coins: " + coinAmount.ToString();
+        Audio.Manager.PlaySound(ESounds.COIN);
     }
     public void ChangeMainMenu()
     {
-        counter -= Time.unscaledDeltaTime;
+        switchToMainMenuCount -= Time.unscaledDeltaTime;
 
-        if (counter < 0)
+        if (switchToMainMenuCount < 0)
             SceneManager.LoadScene(0);
     }
 }

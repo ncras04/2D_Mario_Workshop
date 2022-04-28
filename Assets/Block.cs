@@ -36,11 +36,13 @@ public class Block : MonoBehaviour
     {
         if (!alive)
             return;
+        
         playerHitCheck = new Vector2(transform.position.x, transform.position.y - groundCheckPosY * 0.5f) * transform.localScale;
 
         if (BoxCast.Cast(playerHitCheck, groundCheckSize, 0f, Vector2.down, 0.1f, playerLayer))
         {
             alive = false;
+            Game.Manager.GetCoin();
             animate.SetTrigger("Dead");
         }
 
