@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6769e7ab9bf992748b3921ad7ac5f78d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  switchToMainMenuCount: 5
+  switchToMainMenuCount: 0
   coinUI: {fileID: 306347160}
 --- !u!1 &194310598
 GameObject:
