@@ -23,11 +23,13 @@ public class EnemyController : MonoBehaviour
     private Rigidbody2D rb;
 
     private Animator animator;
+    private SpriteRenderer sprite;
 
     private void Start()
     {
         BoxCollider2D tmp = GetComponent<BoxCollider2D>();
         animator = GetComponentInChildren<Animator>();
+        sprite = GetComponentInChildren<SpriteRenderer>();
         wallCheckPosX = tmp.size.x * 0.5f;
         wallCheckSize = new Vector2(0.5f, tmp.size.y * 0.5f);
 
@@ -53,6 +55,7 @@ public class EnemyController : MonoBehaviour
                     wallCheckPosX = Mathf.Abs(wallCheckPosX);
                     movementSpeed = Mathf.Abs(movementSpeed);
                     movingLeft = !movingLeft;
+                    sprite.flipX = true;
                 }
             }
             else
@@ -62,6 +65,7 @@ public class EnemyController : MonoBehaviour
                     wallCheckPosX = -wallCheckPosX;
                     movementSpeed = -movementSpeed;
                     movingLeft = !movingLeft;
+                    sprite.flipX = false;
                 }
             }
     }
