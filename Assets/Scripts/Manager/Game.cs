@@ -60,6 +60,6 @@ public class Game : MonoBehaviour
         switchToMainMenuCount -= Time.unscaledDeltaTime;
 
         if (switchToMainMenuCount < 0)
-            SceneManager.LoadScene(0);
+            Application.Quit();
     }
 }
