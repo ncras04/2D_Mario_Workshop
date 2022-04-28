@@ -59,10 +59,7 @@ public class PlayerContr : MonoBehaviour
 
     void Update()
     {
-
         horizontalDirection = Input.GetAxisRaw("Horizontal");
-
-        currentState = CheckState(currentState);
 
         groundCheckPos = new Vector2(transform.position.x, transform.position.y - groundCheckPosY * 0.5f) * transform.localScale;
         hit = Physics2D.BoxCast(groundCheckPos, groundCheckSize, 0f, Vector2.down, 0f, groundAndEnemyLayer);
@@ -72,6 +69,9 @@ public class PlayerContr : MonoBehaviour
             isGrounded = hit.collider.CompareTag("Ground");
         }
         Debug.Log(currentState);
+
+        currentState = CheckState(currentState);
+
     }
 
     private EPlayerStates CheckState(EPlayerStates _currentState)
@@ -81,7 +81,7 @@ public class PlayerContr : MonoBehaviour
             case EPlayerStates.IDLE:
                 {
                     Move();
-                    if (horizontalDirection != 0)
+                    if (rb.velocity.x != 0)
                         return EPlayerStates.WALKING;
 
                     if (CheckJump())
@@ -104,7 +104,7 @@ public class PlayerContr : MonoBehaviour
                         return EPlayerStates.JUMPING;
                     }
 
-                    if (horizontalDirection != 0)
+                    if (rb.velocity.x != 0)
                         return EPlayerStates.WALKING;
 
                     return EPlayerStates.IDLE;
