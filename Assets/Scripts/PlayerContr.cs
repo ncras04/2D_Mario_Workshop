@@ -236,9 +236,9 @@ public class PlayerContr : MonoBehaviour
     {
         if (hit.collider.CompareTag("Enemy"))
         {
+            hit.collider.GetComponent<EnemyController>().Kill();
             rb.velocity = Vector2.up * ReboundForce;
             Audio.Manager.PlaySound(ESounds.KILLENEMY);
-            Destroy(hit.collider.gameObject);
             return true;
         }
 
@@ -270,9 +270,9 @@ public class PlayerContr : MonoBehaviour
                 currentState = EPlayerStates.KILLED;
             else
             {
+                collision.collider.GetComponent<EnemyController>().Kill();
                 rb.velocity = Vector2.up * ReboundForce;
                 Audio.Manager.PlaySound(ESounds.KILLENEMY);
-                Destroy(hit.collider.gameObject);
             }
         }
 
