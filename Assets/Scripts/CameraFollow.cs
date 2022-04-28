@@ -13,7 +13,13 @@ public class CameraFollow : MonoBehaviour
 
     private Vector3 currentVelocity;
 
-    Vector3 tempPos;
+    [SerializeField]
+    private Transform minPos;
+    [SerializeField]
+    private Transform maxPos;
+
+    Vector3 clampPos;
+    Vector3 newPos;
 
     [SerializeField]
     float smoothTime;
@@ -32,14 +38,14 @@ public class CameraFollow : MonoBehaviour
         if (followRigidbody.velocity.x != 0)
             centerOffset.x = Mathf.Abs(centerOffset.x) * (Mathf.Abs(followRigidbody.velocity.x) / followRigidbody.velocity.x);
 
-        tempPos = new Vector3(followTransform.position.x + centerOffset.x, transform.position.y + centerOffset.y, transform.position.z);
+        newPos = new Vector3(followTransform.position.x + centerOffset.x, transform.position.y + centerOffset.y, transform.position.z);
+
+        clampPos = new Vector3(Mathf.Clamp(newPos.x, minPos.position.x, maxPos.position.x),
+                               Mathf.Clamp(newPos.y, minPos.position.y, maxPos.position.y),
+                               transform.position.z);
     }
     private void FixedUpdate()
     {
-        transform.position = Vector3.SmoothDamp(transform.position, tempPos, ref currentVelocity, smoothTime);
+        transform.position = Vector3.SmoothDamp(transform.position, clampPos, ref currentVelocity, smoothTime);
     }
-
-
-
-
 }
