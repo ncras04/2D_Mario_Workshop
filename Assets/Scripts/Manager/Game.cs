@@ -11,6 +11,8 @@ public class Game : MonoBehaviour
     [SerializeField]
     float counter;
 
+
+
     private void Awake()
     {
         if (Manager != null)
@@ -33,6 +35,7 @@ public class Game : MonoBehaviour
 
     private void Update()
     {
+
         if(PlayerContr.Player.CurrentState == EPlayerStates.DEAD)
         {
             ChangeMainMenu();
