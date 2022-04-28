@@ -62,15 +62,12 @@ public class PlayerContr : MonoBehaviour
         horizontalDirection = Input.GetAxisRaw("Horizontal");
 
         groundCheckPos = new Vector2(transform.position.x, transform.position.y - groundCheckPosY * 0.5f) * transform.localScale;
-        hit = Physics2D.BoxCast(groundCheckPos, groundCheckSize, 0f, Vector2.down, 0f, groundAndEnemyLayer);
+        hit = Physics2D.BoxCast(groundCheckPos, groundCheckSize, 0f, Vector2.down, 0.5f, groundAndEnemyLayer);
 
-        if (hit.collider)
-        {
-            isGrounded = hit.collider.CompareTag("Ground");
-        }
-        Debug.Log(currentState);
+        isGrounded = hit.collider != null;
 
         currentState = CheckState(currentState);
+        Debug.Log(currentState);
 
     }
 
@@ -81,6 +78,9 @@ public class PlayerContr : MonoBehaviour
             case EPlayerStates.IDLE:
                 {
                     Move();
+                    if (CheckEnemy())
+                        return EPlayerStates.DEAD;
+
                     if (rb.velocity.x != 0)
                         return EPlayerStates.WALKING;
 
@@ -98,6 +98,10 @@ public class PlayerContr : MonoBehaviour
             case EPlayerStates.WALKING:
                 {
                     Move();
+
+                    if (CheckEnemy())
+                        return EPlayerStates.DEAD;
+
                     if (CheckJump())
                     {
                         Jump();
@@ -112,28 +116,44 @@ public class PlayerContr : MonoBehaviour
             case EPlayerStates.JUMPING:
                 {
                     Move();
+
+                    if (CheckEnemy())
+                        return EPlayerStates.DEAD;
+
                     return Jump();
                 }
             case EPlayerStates.FALLING:
                 {
                     Move();
-                    CheckEnemy();
 
-                    if (!isGrounded)
+                    if (isGrounded && !CheckEnemyKill())
                     {
-                        return EPlayerStates.FALLING;
+                        if (rb.velocity.x != 0)
+                            return EPlayerStates.WALKING;
+
+                        return EPlayerStates.IDLE;
                     }
 
-                    return EPlayerStates.IDLE;
+                    return EPlayerStates.FALLING;
                 }
             case EPlayerStates.DEAD:
                 {
+                    Destroy(this.gameObject);
                     return EPlayerStates.DEAD;
                 }
 
             default:
                 return EPlayerStates.IDLE;
         }
+    }
+
+    private bool CheckEnemy()
+    {
+        if (hit.collider)
+        {
+            return hit.collider.CompareTag("Enemy");
+        }
+        return false;
     }
 
     private EPlayerStates Jump()
@@ -145,26 +165,26 @@ public class PlayerContr : MonoBehaviour
 
             if (Input.GetKeyUp(KeyCode.Space))
             {
-                CheckEnemy();
                 return EPlayerStates.FALLING;
             }
             return EPlayerStates.JUMPING;
         }
 
-        CheckEnemy();
         return EPlayerStates.FALLING;
     }
 
-    private void CheckEnemy()
+    private bool CheckEnemyKill()
     {
-        if (hit.collider)
+        if (hit.collider != null)
         {
             if (hit.collider.CompareTag("Enemy"))
             {
                 rb.velocity = Vector2.up * ReboundForce;
                 Destroy(hit.collider.gameObject);
+                return true;
             }
         }
+        return false;
     }
 
     private void Move()
@@ -185,7 +205,6 @@ public class PlayerContr : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-
         Gizmos.DrawWireCube(groundCheckPos, groundCheckSize);
     }
 }
