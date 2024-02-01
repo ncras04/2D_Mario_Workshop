@@ -1,23 +1,15 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using TMPro;
 
 public class Game : MonoBehaviour
 {
     public static Game Manager { get; private set; }
 
     [SerializeField]
-    float switchToMainMenuCount;
-
-    [SerializeField]
-    TextMeshProUGUI coinUI;
+    float m_switchToMainMenuCount;
 
     private int coinAmount = 0;
-
-
 
     private void Awake()
     {
@@ -31,35 +23,31 @@ public class Game : MonoBehaviour
 
         Init();
     }
-
     private void Init()
     {
         Time.timeScale = 1;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
-
-    private void Update()
-    {
-        if(PlayerContr.Player.CurrentState == EPlayerStates.DEAD)
-        {
-            ChangeMainMenu();
-            Time.timeScale = 0;
-        }    
-
-    }
-
     public void GetCoin()
     {
         coinAmount += 1;
-        coinUI.text = "Coins: " + coinAmount.ToString();
+        UI.Manager.SetCoinUI(coinAmount);
         Audio.Manager.PlaySound(ESounds.COIN);
     }
     public void ChangeMainMenu()
     {
-        switchToMainMenuCount -= Time.unscaledDeltaTime;
+        StartCoroutine(SwitchToMain());
+    }
 
-        if (switchToMainMenuCount < 0)
+    private IEnumerator SwitchToMain()
+    {
+        yield return new WaitForSeconds(m_switchToMainMenuCount);
+
+#if UNITY_EDITOR
+            EditorApplication.ExitPlaymode();
+#else
             Application.Quit();
+#endif
     }
 }

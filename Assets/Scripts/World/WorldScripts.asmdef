@@ -1,0 +1,17 @@
+{
+    "name": "WorldScripts",
+    "rootNamespace": "",
+    "references": [
+        "GUID:13a3172913376cd42986b950298633db",
+        "GUID:e6a17f0ebd8018e44a23e9b7c8f346e1"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
