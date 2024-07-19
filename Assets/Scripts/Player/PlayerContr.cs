@@ -11,7 +11,8 @@ public enum EPlayerStates
 public class PlayerContr : MonoBehaviour
 {
     public GameObject m_fireball;
-    public Vector2 m_fireballforce;
+    [SerializeField]
+    public Vector2 fireballDirection;
 
 
     public EPlayerStates CurrentState => m_currentState;
@@ -30,6 +31,9 @@ public class PlayerContr : MonoBehaviour
 
     [SerializeField]
     private float m_jumpTime;
+
+    [SerializeField]
+    float fireballSpeed;
     private float m_jumpCounter;
     private Rigidbody2D m_rb;
     private bool m_isGrounded;
@@ -79,7 +83,14 @@ public class PlayerContr : MonoBehaviour
         {
             GameObject fb = Instantiate(m_fireball, transform.position, Quaternion.identity);
             Rigidbody2D fbrb = fb.GetComponent<Rigidbody2D>();
-            fbrb.AddForce(m_fireballforce * 100);
+            if (m_sprite.flipX)
+            {
+                fbrb.AddForce(-transform.right * fireballSpeed);
+            }
+            else
+            {
+                fbrb.AddForce(transform.right * fireballSpeed);
+            }
         }
 
         m_groundCheckPos = new Vector2(transform.position.x, transform.position.y - m_groundCheckPosY * 0.5f) * transform.localScale;
@@ -269,7 +280,7 @@ public class PlayerContr : MonoBehaviour
         }
 
         if (_collision.collider.CompareTag("DeathZone"))
-                m_currentState = EPlayerStates.KILLED;
+            m_currentState = EPlayerStates.KILLED;
 
         if (_collision.collider.CompareTag("Block"))
         {

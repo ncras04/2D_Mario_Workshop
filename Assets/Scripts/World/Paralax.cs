@@ -13,8 +13,10 @@ public class Paralax : MonoBehaviour
         startPos = transform.position;
     }
 
-    void Update()
+    void FixedUpdate()
     {
+        //Vector3.SmoothDamp(transform.position, Player.position,ref vel, Damping);
+        //transform.position += vel * XMoveSpeed;
         transform.position = new Vector2((Player.position.x * XMoveSpeed) + startPos.x, transform.position.y);
     }
 }

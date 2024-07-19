@@ -75,8 +75,8 @@ public class EnemyController : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D _collision)
     {
-        if (_collision.collider.CompareTag("DeathZone"))
-            Destroy(gameObject);
+        if (_collision.collider.CompareTag("DeathZone") || _collision.collider.CompareTag("Fireball"))
+            Kill();
 
         return;
     }

@@ -10,6 +10,7 @@ TagManager:
   - Dead
   - Block
   - Coin
+  - Fireball
   layers:
   - Default
   - TransparentFX

@@ -17,6 +17,9 @@ public class Block : MonoBehaviour
     private LayerMask m_playerLayer;
     private RaycastHit2D m_hit;
 
+    [SerializeField]
+    ParticleSystem ps;
+
     private void Start()
     {
         m_animator = GetComponentInParent<Animator>();
@@ -40,6 +43,7 @@ public class Block : MonoBehaviour
         {
             m_alive = false;
             Game.Manager.GetCoin();
+            ps.Play();
             m_animator.SetTrigger("Dead");
         }
     }
