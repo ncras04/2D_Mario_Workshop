@@ -25,7 +25,7 @@ public class CameraFollow : MonoBehaviour
     private void Start()
     {
         if (m_followObject == null)
-            m_followObject = FindObjectOfType<PlayerContr>().gameObject;
+            m_followObject = FindObjectOfType<PlayerController>().gameObject;
 
         m_followRigidbody = m_followObject.GetComponent<Rigidbody2D>();
         m_followTransform = m_followRigidbody.transform;
