@@ -68,21 +68,11 @@ public class PlayerController : MonoBehaviour
         m_lastJumpTime -= Time.deltaTime;
 
         Collider2D collision = Physics2D.OverlapBox(m_groundCheckPos.position, m_groundChecksize, 0, m_groundLayer);
+
         if (collision is not null)
         {
-            if (collision.CompareTag("Enemy"))
-            {
-                collision.GetComponent<EnemyController>().Kill();
-                m_rb.AddForce(Vector2.up * m_reboundForce, ForceMode2D.Impulse);
-            }
-            else
-            {
-                if (m_rb.velocity.y < 0.01f)
-                    m_isJumping = false;
-
-                m_lastGroundedTime = m_jumpCoyoteTime;
-                m_animator.SetBool("Grounded", true);
-            }
+            m_lastGroundedTime = m_jumpCoyoteTime;
+            m_animator.SetBool("Grounded", true);
         }
         else
             m_animator.SetBool("Grounded", false);
@@ -95,37 +85,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //rigidbody.velocity = new Vector2(moveInput * moveSpeed, rigidbody.velocity.y);
-        float targetSpeed = m_moveInput * m_moveSpeed;
-        float speedDifference = targetSpeed - m_rb.velocity.x;
-
-        //float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : deceleration;
-
-        //float movement = Mathf.Pow(Mathf.Abs(speedDifference) * accelRate, velPower) * Mathf.Sign(speedDifference);
-
-        float movement = speedDifference * m_acceleration;
-
-        m_rb.AddForce(movement * Vector2.right);
-
-        if (m_lastGroundedTime > 0 && MathF.Abs(m_moveInput) < 0.01f)
-        {
-            float amount = Mathf.Min(Mathf.Abs(m_rb.velocity.x), Mathf.Abs(m_frictionAmount));
-
-            amount *= Mathf.Sign(m_rb.velocity.x);
-            m_rb.AddForce(Vector2.right * -amount, ForceMode2D.Impulse);
-        }
-
-        if (m_rb.velocity.y < 0)
-        {
-            m_rb.gravityScale = m_gravityScale * m_fallGravityMultiplier;
-        }
-        else
-        {
-            m_rb.gravityScale = m_gravityScale;
-        }
-
         m_animator.SetFloat("Movement", Mathf.Abs(m_rb.velocity.x));
-
     }
     public void OnMovement(InputAction.CallbackContext _ctx)
     {
@@ -136,27 +96,15 @@ public class PlayerController : MonoBehaviour
     {
         if (_ctx.performed)
         {
-            m_lastJumpTime = m_jumpBufferTime;
 
-            if (m_lastGroundedTime > 0 && m_lastJumpTime > 0 && !m_isJumping)
-                Jump();
         }
         if (_ctx.canceled)
         {
-            if (m_rb.velocity.y > 0 && m_isJumping)
-            {
-                m_rb.AddForce(Vector2.down * m_rb.velocity.y, ForceMode2D.Impulse);
-            }
 
-            m_lastJumpTime = 0;
         }
     }
     private void Jump()
     {
-        m_rb.AddForce(Vector2.up * m_jumpForce, ForceMode2D.Impulse);
-        m_lastGroundedTime = 0;
-        m_lastJumpTime = 0;
-        m_isJumping = true;
 
         Audio.Manager.PlaySound(ESounds.JUMP);
     }
@@ -164,13 +112,7 @@ public class PlayerController : MonoBehaviour
     {
         if (_ctx.performed)
         {
-            GameObject fb = Instantiate(m_fireballPrefab, transform.position, Quaternion.identity);
-            Rigidbody2D fbrb = fb.GetComponent<Rigidbody2D>();
 
-            int direction = m_sprite.flipX ? -1 : 1; 
-            fbrb.velocity = new Vector2(direction * (m_fireballSpeed + Mathf.Abs(m_rb.velocity.x)), 0);
-
-            Audio.Manager.PlaySound(ESounds.FIREBALL);
         }
     }
 }
