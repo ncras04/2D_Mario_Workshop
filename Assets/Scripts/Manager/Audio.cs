@@ -10,6 +10,7 @@ public enum ESounds
     BLOCK,
     KILLENEMY,
     DEATH,
+    FIREBALL,
 }
 
 [System.Serializable]

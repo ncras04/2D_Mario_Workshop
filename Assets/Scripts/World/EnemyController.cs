@@ -87,6 +87,7 @@ public class EnemyController : MonoBehaviour
         m_animator.SetTrigger("Death");
         gameObject.tag = "Dead";
         m_rb.simulated = false;
+        Audio.Manager.PlaySound(ESounds.KILLENEMY);
     }
 }
 
