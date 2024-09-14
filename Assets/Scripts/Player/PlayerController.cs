@@ -36,7 +36,6 @@ public class PlayerController : MonoBehaviour
     private float m_jumpBufferTime;
 
     private float m_lastGroundedTime = 0;
-    private float m_lastJumpTime = 0;
     private bool m_isJumping = false;
 
     [Header("Ground Check")]
@@ -62,35 +61,39 @@ public class PlayerController : MonoBehaviour
         m_sprite = GetComponentInChildren<SpriteRenderer>();
     }
 
+
     void Update()
     {
-        m_lastGroundedTime -= Time.deltaTime;
-        m_lastJumpTime -= Time.deltaTime;
-
         Collider2D collision = Physics2D.OverlapBox(m_groundCheckPos.position, m_groundChecksize, 0, m_groundLayer);
 
         if (collision is not null)
         {
-            m_lastGroundedTime = m_jumpCoyoteTime;
             m_animator.SetBool("Grounded", true);
         }
         else
-            m_animator.SetBool("Grounded", false);
-
-        if (m_moveInput != 0)
         {
-            m_sprite.flipX = m_moveInput < -0.01f;
+            m_animator.SetBool("Grounded", false);
         }
     }
+
 
     private void FixedUpdate()
     {
         m_animator.SetFloat("Movement", Mathf.Abs(m_rb.velocity.x));
     }
+
+
+    private void Jump()
+    {
+        Audio.Manager.PlaySound(ESounds.JUMP);
+    }
+
+
     public void OnMovement(InputAction.CallbackContext _ctx)
     {
         m_moveInput = _ctx.ReadValue<Vector2>().x;
     }
+
 
     public void OnJump(InputAction.CallbackContext _ctx)
     {
@@ -103,11 +106,8 @@ public class PlayerController : MonoBehaviour
 
         }
     }
-    private void Jump()
-    {
 
-        Audio.Manager.PlaySound(ESounds.JUMP);
-    }
+
     public void OnShoot(InputAction.CallbackContext _ctx)
     {
         if (_ctx.performed)
